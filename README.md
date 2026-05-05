@@ -102,8 +102,8 @@ serves as the primary key. Indexed on `address` for improved query performance.
 auto generated and serves as the primary key. `datetime` is server generated at time
 of insert. `author`, `address`, and `comment` are provided by the user via POST request.
 
-Address columns are normalized to lowercase and trimmed at both ingestion time and
-query time to ensure safe JOINs across tables.
+Address columns are normalized to lowercase and trimmed at ingestion time and on
+incoming requests before querying, ensuring safe JOINs across tables.
 
 ## API Endpoints
 
