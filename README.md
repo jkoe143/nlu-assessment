@@ -35,7 +35,7 @@ pip install -r requirements.txt
 ```
 DB_NAME=nlu_assessment
 DB_USER=postgres
-DB_PASSWORD=your_password
+DB_PASSWORD=your_postgres_password_here
 DB_HOST=localhost
 DB_PORT=5432
 ```
