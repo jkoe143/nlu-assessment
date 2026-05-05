@@ -1,5 +1,5 @@
 create table violations (
-    id int primary key, -- primary
+    id int primary key, -- unique identifier
     date date not null, -- mandatory
     code text,
     status text,
@@ -9,7 +9,7 @@ create table violations (
 );
 
 create table scofflaws (
-    record_id text primary key, -- primary
+    record_id text primary key, -- unique identifier
     address text not null -- mandatory
 );
 
