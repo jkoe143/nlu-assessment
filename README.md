@@ -12,6 +12,11 @@ Uses two real-world Chicago city datasets:
 - **Database:** PostgreSQL - chosen because it is industry standard, handles relational data well, and supports the JOIN operations this project relies on
 - **Adapter:** psycopg2 - required for database interaction since ORM is not allowed
 
+## Prerequisites
+
+- Python 3.11+
+- PostgreSQL
+
 ## Setup Instructions
 
 ### 1. Clone the repository and navigate to the project folder
