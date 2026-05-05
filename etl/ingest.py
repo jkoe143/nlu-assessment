@@ -8,6 +8,7 @@ from app.db import connect_db
 
 def ingest_violations(cursor):
     # csv is pre-filtered to start from 01/01/2024
+    cutoff_date = datetime(2024, 1, 1).date()
     with open("datasets/Building_Violations_20250815.csv", newline="", encoding="utf-8") as f:
         reader = csv.DictReader(f)
         for row in reader:
@@ -32,6 +33,10 @@ def ingest_violations(cursor):
                 date = datetime.strptime(row["VIOLATION DATE"].strip(), "%m/%d/%Y").date()
             except ValueError:
                 print(f"Row {row['ID']} skipped - due to missing required field of VIOLATION DATE (invalid format)")
+                continue
+
+            # skip rows before cutoff date
+            if date < cutoff_date:
                 continue
             
             # avoid reinserting if rows exist already

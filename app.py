@@ -17,15 +17,36 @@ def get_property(address):
     cursor.execute("""
         SELECT date, code, status, description, inspector_comments
         FROM violations
-        WHERE LOWER(TRIM(address)) = %s
+        WHERE address = %s
     """, (address,))
     rows = cursor.fetchall()
 
-    # return 404 if no violations found for this address
+
+    # if no violations, check if address exists in scofflaws
     if not rows:
+        cursor.execute("""
+            SELECT EXISTS (
+                SELECT 1 FROM scofflaws
+                WHERE address = %s
+            )
+        """, (address,))
+        is_scofflaw = cursor.fetchone()[0]
+        
+        if not is_scofflaw:
+            cursor.close()
+            conn.close()
+            return jsonify({"error": "No property found for this address"}), 404
+        
+        # address exists in scofflaws but has no violations
         cursor.close()
         conn.close()
-        return jsonify({"error": "No property found for this address"}), 404
+        return jsonify({
+            "address": address,
+            "last_violation_date": None,
+            "total_violation_count": 0,
+            "violations": [],
+            "scofflaw": True
+        }), 200
 
     # build violations array from query results
     violations = []
@@ -51,7 +72,7 @@ def get_property(address):
     cursor.execute("""
         SELECT EXISTS (
             SELECT 1 FROM scofflaws
-            WHERE LOWER(TRIM(address)) = %s
+            WHERE address = %s
         )
     """, (address,))
     scofflaw = cursor.fetchone()[0]
@@ -138,7 +159,7 @@ def get_scofflaw_violations():
     cursor.execute("""
         SELECT DISTINCT s.address
         FROM scofflaws s
-        JOIN violations v ON LOWER(TRIM(v.address)) = LOWER(TRIM(s.address))
+        JOIN violations v ON v.address = s.address
         WHERE v.date >= %s
     """, (since_date,))
 
